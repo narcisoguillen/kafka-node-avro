@@ -46,9 +46,9 @@ This package will not fullfill the promise if is not able to fetch the schemas f
 
 
 ```
-const Kafka = require('kafka-node-avro');
+const KafkaAvro = require('kafka-node-avro');
 
-Kafka(Settings).then( kafka => {
+KafkaAvro.init(Settings).then( kafka => {
   // ready to use
 } , error => {
   // something wrong happen

@@ -2,15 +2,25 @@ const Settings   = require('./lib/settings');
 const Client     = require('./lib/client');
 const Producer   = require('./lib/producer');
 const SchemaPool = require('./lib/schemaPool');
+const _          = require('underscore');
 
-module.exports = async function(settings){
-  Settings.read(settings);
+module.exports.init = function(settings){
+  return new Promise(function(resolve, reject){
+    Settings.read(settings);
+    let length = Settings.schema.topics ? Settings.schema.topics.length : 1;
 
-  await Producer.connect(await Client.connect());
+    let done = _.after(length, function(){
+      return resolve(require('./mechanisms'));
+    });
 
-  if(Settings.schema.topics){
-    Settings.schema.topics.forEach(await SchemaPool.add);
-  }
+    Client.connect().then( client => {
+      Producer.connect(client).then( producer =>{
+        if(!Settings.schema.topics){ return done(); }
 
-  return require('./mechanisms');
+        Settings.schema.topics.forEach( topic => {
+          SchemaPool.add(topic).then(done, reject);
+        });
+      }, reject);
+    }, reject);
+  });
 };
