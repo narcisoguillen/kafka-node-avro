@@ -1,5 +1,5 @@
 {
-  "name": "@narcisoguillen/kafka-node-avro",
+  "name": "kafka-node-avro",
   "version": "0.0.1",
   "description": "kafka avro serialization",
   "main": "index.js",
