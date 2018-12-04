@@ -16,9 +16,53 @@ This library combines [kafka-node](https://github.com/SOHU-Co/kafka-node) and [a
 
 * `name` : Name of the topic
 * `version` : Version of the Schema
+* `id` : id of the Schema
 *  `key_fields` : Array of fields to use to build topic key.
 
 #### Sample options
+
+
+```
+const Settings = {
+    "brokers" : "localhost:9092",
+    "schema": {
+      "registry" : "http://schemaregistry.example.com:8081"
+    }
+  };
+```
+
+```
+const Settings = {
+    "brokers" : "localhost:9092",
+    "schema": {
+      "registry" : "http://schemaregistry.example.com:8081",
+      "topics"   : [{ "name" : "my.cool.topic" }]
+    }
+  };
+```
+
+```
+const Settings = {
+    "brokers" : "localhost:9092",
+    "schema": {
+      "registry" : "http://schemaregistry.example.com:8081",
+      "topics"   : [{ "id" : 1 }]
+    }
+  };
+```
+
+```
+const Settings = {
+    "brokers" : "localhost:9092",
+    "schema": {
+      "registry" : "http://schemaregistry.example.com:8081",
+      "topics"   : [{
+        "name"    : "my.cool.topic",
+        "version" : 1,
+      }]
+    }
+  };
+```
 
 ```
 const Settings = {
