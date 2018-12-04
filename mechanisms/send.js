@@ -6,7 +6,7 @@ module.exports = function(data){
   return new Promise(function(resolve, reject){
     if(data.simple){ return send(Simple.parse(data)); }
 
-    SchemaPool.get(data.topic).then( schema => {
+    SchemaPool.getByName(data.topic).then( schema => {
       try{
         return send(schema.parse(data));
       }catch(error){
