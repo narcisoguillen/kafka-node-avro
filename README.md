@@ -130,7 +130,7 @@ kafka.send({
 });
 ```
 
-If an invalid payload was provided for the AVRO Schema, the error will look like : `Invalid Field **'\<FIELD\>'** type **"\<TYPE\>"** : **\<VALUE\>**`
+If an invalid payload was provided for the AVRO Schema, the error will look like : `Invalid Field 'FIELD' type "TYPE" : VALUE`
 
 ## addConsumer(\<TopicName\>, [Options])
 
