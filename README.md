@@ -103,10 +103,16 @@ KafkaAvro.init(Settings).then( kafka => {
 ## send(\<message\>)
 This package will auto encode the message using the `avro` schema, if the schema was not provided on the initial settings, it will fetch it against the schema registry and use it from there on.
 
-[Params](https://github.com/SOHU-Co/kafka-node#sendpayloads-cb)
+**Message Format**
 
-The only difference is on the `messages`
+* `simple` : If **NO** avro schema parsing is needed to send the message
+* `topic` : Topic Name
 * `messages` : messages to send type **Object** or **Array** of **Objects**
+* `key` : string or buffer, only needed when using keyed partitioner
+* `partition` :  default 0
+* `attributes` : default: 0
+* `timestamp` : Date.now() // <-- defaults to Date.now() (only available with kafka v0.10 and KafkaClient only)
+
 
 If `key_fields` where provided when building the package, they will be used to send the messages on that `key`, on this example the key will be `hello/world`
 
@@ -119,50 +125,36 @@ kafka.send({
   }
 }).then( success => {
   // Message was sent encoded with Avro Schema
-}, error =>{
+}, error => {
   // Something wrong happen
 });
 ```
 
-### Simple send(\<message\>)
-If **NO** avro schema parsing is needed to send the message the package can encode the payload without avro by sending a `simple` flag.
-
-```
-kafka.send({
-  simple   : true,
-  topic    : 'my.cool.topic-2',
-  messages : {
-    foo : 'hello',
-    bar : 'world'
-  }
-}).then( success => {
-  // Message was sent without Avro Schema
-}, error =>{
-  // Something wrong happen
-});
-```
+If an invalid payload was provided for the AVRO Schema, the error will look like : `Invalid Field **'\<FIELD\>'** type **"\<TYPE\>"** : **\<VALUE\>**`
 
 ## addConsumer(\<TopicName\>, [Options])
 
-[Options](https://github.com/SOHU-Co/kafka-node#consumergroupoptions-topics)
-
 This package will auto decode the message before emitting on the `message` event, the message will be on a **JSON** format.
+
+**Options**
+
+* `simple` : If **NO** avro schema parsing is needed to consume the message
+* `host` : zookeeper host omit if connecting directly to broker (see kafkaHost below)
+* `kafkaHost` : connect directly to kafka broker (instantiates a KafkaClient)
+* `zk` : put client zk settings if you need them (see Client)
+* `batch` : put client batch settings if you need them (see Client)
+* `ssl` : optional (defaults to false) or tls options hash
+* `groupId` : Group Id
+* `sessionTimeout` : Session Tiemout
+* `protocol` : An array of partition assignment protocols ordered by preference. ['roundrobin']
+* `fromOffset` : latest
+* `commitOffsetsOnFirstJoin` : on the very first time this consumer group subscribes to a topic, record the offset returned in fromOffset (latest/earliest)
+* `outOfRangeOffset` : how to recover from OutOfRangeOffset error (where save offset is past server retention) accepts same value as fromOffset
 
 ```
 let consumer = kafka.addConsumer("my.cool.topic");
 
 consumer.on('message', message => {
  // we got a decoded message
-});
-```
-
-### Simple addConsumer(\<TopicName\>, [Options])
-If **NO** avro schema parsing is needed to consume the message the package can decode the payload without avro by sending a `simple` flag.
-
-```
-let consumer = kafka.addConsumer("my.cool.topic-2", { simple : true });
-
-consumer.on('message', message => {
- // we got an undecoded message
 });
 ```
