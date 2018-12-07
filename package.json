@@ -6,7 +6,7 @@
   "author": "narciso guillen",
   "license": "ISC",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node node_modules/.bin/mocha ./test --recursive"
   },
   "repository": {
     "type": "git",
@@ -26,7 +26,13 @@
   "dependencies": {
     "avsc": "^5.4.7",
     "kafka-node": "^3.0.1",
+    "npm": "^6.4.1",
     "request": "^2.88.0",
     "underscore": "^1.9.1"
+  },
+  "devDependencies": {
+    "expect.js": "^0.3.1",
+    "mocha": "^5.2.0",
+    "nock": "^10.0.3"
   }
 }
