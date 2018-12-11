@@ -17,7 +17,7 @@ This library combines [kafka-node](https://github.com/SOHU-Co/kafka-node) and [a
 * `name` : Name of the topic
 * `version` : Version of the Schema
 * `id` : id of the Schema
-*  `key_fields` : Array of fields to use to build topic key.
+* `key_fields` : Array of fields to use to build topic key.
 
 #### Sample options
 
