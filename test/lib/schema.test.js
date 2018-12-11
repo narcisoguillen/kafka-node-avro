@@ -190,7 +190,7 @@ describe('Shema', function() {
     });
 
 
-    it('should fetch a schema from schema registry by version', function(done) {
+    it('should fetch a schema from schema registry by id', function(done) {
       let schema = new Schema({ id : 1 });
 
       expect(schema.fetchById).to.be.a('function');
@@ -201,7 +201,100 @@ describe('Shema', function() {
     });
   });
 
-  // TODO
-  //- fetchByName
-  //- fetch
+  describe('fetchByName', function() {
+    before(function(){
+      nock('http://test.registry.com').get('/subjects/test.byName-value/versions').reply(200, JSON.stringify([1]));
+      nock('http://test.registry.com').get('/subjects/test.byName-value/versions/1').reply(200, JSON.stringify({
+        subject : 'TestByName-value',
+        version : 1,
+        id : 1,
+        schema : '{"type":"record","name":"TestByName","namespace":"com.test.avro","fields":[{"name":"foo","type":"string"},{"name":"bar","type":"string"}]}'
+      }));
+    });
+
+
+    it('should fetch a schema from schema registry by name', function(done) {
+      let schema = new Schema({ name : 'test.byName' });
+
+      expect(schema.fetchByName).to.be.a('function');
+      schema.fetchByName().then( result => {
+        expect(result.name).to.eql('test.byName');
+        expect(result.version).to.eql(1);
+        expect(result.id).to.eql(1);
+        return done();
+      }, done);
+    });
+  });
+
+  describe('fetch', function(){
+
+    beforeEach(function(){
+      let version  = [1,2,3,4,5];
+
+      let V3 = {
+        subject : 'TestTopic-value',
+        version : 3,
+        id      : 4,
+        schema  : '{"type":"record","name":"TestTopic","namespace":"com.test.avro","fields":[{"name":"foo","type":"string"},{"name":"bar","type":"string"}]}'
+      };
+
+      let V5 = {
+        subject : 'TestTopic-value',
+        version : 5,
+        id      : 10,
+        schema  : '{"type":"record","name":"TestTopic","namespace":"com.test.avro","fields":[{"name":"foo","type":"string"},{"name":"bar","type":"string"}]}'
+      };
+
+      nock('http://test.registry.com').get('/subjects/test.topic-value/versions').reply(200, JSON.stringify(version));
+      nock('http://test.registry.com').get('/subjects/test.topic-value/versions/3').reply(200, JSON.stringify(V3));
+      nock('http://test.registry.com').get('/subjects/test.topic-value/versions/5').reply(200, JSON.stringify(V5));
+      nock('http://test.registry.com').get('/schemas/ids/10').reply(200, JSON.stringify({ schema : V5.schema }));
+    });
+
+    it('should fetch topic by id', function(done) {
+      let schema = new Schema({ id : 10 });
+
+      schema.fetch().then( result => {
+        expect(result.id).to.eql(10);
+        return done();
+      }, done);
+    })
+
+    it('should fetch topic by name', function(done) {
+      let schema = new Schema({ name : 'test.topic' });
+
+      schema.fetch().then( result => {
+        expect(result.name).to.eql('test.topic');
+        expect(result.id).to.eql(10);
+        return done();
+      }, done);
+    })
+
+    describe('Version', function(done){
+      it('should fetch latest version if no version is provided', function(done) {
+        let schema = new Schema({ name : 'test.topic' });
+
+        schema.fetch().then( result => {
+          expect(result.name).to.eql('test.topic');
+          expect(result.id).to.eql(10);
+          expect(result.version).to.eql(5);
+          return done();
+        }, done);
+      })
+
+      it('should fetch specific version if version is provided', function(done) {
+        let schema = new Schema({
+          name    : 'test.topic',
+          version : 3
+        });
+
+        schema.fetch().then( result => {
+          expect(result.name).to.eql('test.topic');
+          expect(result.id).to.eql(4);
+          expect(result.version).to.eql(3);
+          return done();
+        }, done);
+      })
+    });
+  });
 });

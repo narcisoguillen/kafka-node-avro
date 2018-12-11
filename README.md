@@ -86,7 +86,7 @@ const Settings = {
 
 ## Build
 
-This package will not fullfill the promise if is not able to fetch the schemas from the schema registry, if shema settings was provided.
+This package will not fullfill the promise if is not able to fetch the schemas from the schema registry.
 
 
 ```
