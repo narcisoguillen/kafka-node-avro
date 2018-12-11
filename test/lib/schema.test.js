@@ -19,7 +19,7 @@ describe('Shema', function() {
       key_fields : ['foo', 'bar']
     });
 
-    this.schema.parser = avro.parse({
+    this.schema.parser = avro.Type.forSchema({
       "type" : "record",
       "name" : "TestClass",
       "namespace" : "com.test.avro",
@@ -124,6 +124,22 @@ describe('Shema', function() {
 
   });
 
+  describe('decode', function() {
+    it('should decode a message from a avro schema', function(done) {
+      let message = {
+        foo : 'hello',
+        bar : 'world'
+      };
+
+      expect(this.schema.decode).to.be.a('function');
+      this.schema.encode(message).then( encoded => {
+        let decoded = this.schema.decode(encoded);
+        expect(decoded).to.eql(message);
+        return done();
+      }, done);
+    });
+  });
+
   describe('fetchVersions', function() {
     let versions = [1,2,3];
     nock('http://test.registry.com').get('/subjects/test.topic-value/versions').reply(200, JSON.stringify(versions));
@@ -137,9 +153,55 @@ describe('Shema', function() {
     });
   });
 
+
+  describe('fetchByVersion', function() {
+
+    before(function(){
+      nock('http://test.registry.com').get('/subjects/test.byVersion-value/versions/1').reply(200, JSON.stringify({
+        subject : 'TestByVersion-value',
+        version : 1,
+        id : 1,
+        schema : '{"type":"record","name":"TestByVersion","namespace":"com.test.avro","fields":[{"name":"foo","type":"string"},{"name":"bar","type":"string"}]}'
+      }));
+    });
+
+
+    it('should fetch a schema from schema registry by version', function(done) {
+      let schema = new Schema({
+        name    : 'test.byVersion',
+        version : 1
+      });
+
+      expect(schema.fetchByVersion).to.be.a('function');
+      schema.fetchByVersion().then( result => {
+        expect(result.name).to.eql('test.byVersion');
+        expect(result.version).to.eql(1);
+        expect(result.id).to.eql(1);
+        return done();
+      }, done);
+    });
+  });
+
+  describe('fetchById', function() {
+    before(function(){
+      nock('http://test.registry.com').get('/schemas/ids/1').reply(200, JSON.stringify({
+        schema : '{"type":"record","name":"TestById","namespace":"com.test.avro","fields":[{"name":"foo","type":"string"},{"name":"bar","type":"string"}]}'
+      }));
+    });
+
+
+    it('should fetch a schema from schema registry by version', function(done) {
+      let schema = new Schema({ id : 1 });
+
+      expect(schema.fetchById).to.be.a('function');
+      schema.fetchById().then( result => {
+        expect(result.id).to.eql(1);
+        return done();
+      }, done);
+    });
+  });
+
   // TODO
-  //- fetchByVersion
-  //- fetchById
   //- fetchByName
   //- fetch
 });
