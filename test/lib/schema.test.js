@@ -1,6 +1,7 @@
 const expect   = require('expect.js');
 const Schema   = require('../../lib/schema');
 const Settings = require('../../lib/settings');
+const Registry = require('../../lib/registry');
 const avro     = require('avsc');
 const nock     = require('nock');
 
@@ -13,6 +14,8 @@ describe('Shema', function() {
         "registry" : "http://test.registry.com",
       }
     });
+
+    Registry.init();
 
     this.schema = new Schema({
       name       : 'test.topic',
@@ -139,20 +142,6 @@ describe('Shema', function() {
       }, done);
     });
   });
-
-  describe('fetchVersions', function() {
-    let versions = [1,2,3];
-    nock('http://test.registry.com').get('/subjects/test.topic-value/versions').reply(200, JSON.stringify(versions));
-
-    it('should fetch available versions for a schema registry', function(done) {
-      this.schema.fetchVersions().then( result => {
-        expect(result).to.be.an('array');
-        expect(result).to.eql(versions);
-        return done();
-      }, done);
-    });
-  });
-
 
   describe('fetchByVersion', function() {
 
