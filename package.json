@@ -27,8 +27,7 @@
     "avsc": "^5.4.7",
     "kafka-node": "^3.0.1",
     "npm": "^6.4.1",
-    "request": "^2.88.0",
-    "underscore": "^1.9.1"
+    "request": "^2.88.0"
   },
   "devDependencies": {
     "expect.js": "^0.3.1",

@@ -3,7 +3,6 @@ const Registry   = require('./lib/registry');
 const Client     = require('./lib/client');
 const Producer   = require('./lib/producer');
 const SchemaPool = require('./lib/schemaPool');
-const _          = require('underscore');
 
 module.exports.init = function(settings){
   return new Promise(function(resolve, reject){
@@ -12,7 +11,7 @@ module.exports.init = function(settings){
 
     Registry.alive().then( alive => {
       let length = Settings.schema.topics ? Settings.schema.topics.length : 1;
-      let done   = _.after(length, function(){ return resolve(require('./mechanisms')); });
+      let done   = after(length, function(){ return resolve(require('./mechanisms')); });
       Client.connect().then( client => {
         Producer.connect(client).then( producer => {
           if(!Settings.schema.topics){ return done(); }
@@ -23,4 +22,8 @@ module.exports.init = function(settings){
       }, reject);
     }, reject);
   });
+};
+
+function after(times, func) {
+  return function() { if (--times < 1) { return func.apply(this, arguments); } };
 };
