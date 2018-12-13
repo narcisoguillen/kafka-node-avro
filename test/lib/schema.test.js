@@ -9,9 +9,9 @@ describe('Shema', function() {
 
   beforeEach(function(){
     Settings.read({
-      "brokers" : "test.broker:9092",
-      "schema"  : {
-        "registry" : "http://test.registry.com",
+      brokers : "test.broker:9092",
+      schema  : {
+        registry : "http://test.registry.com",
       }
     });
 
