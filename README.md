@@ -10,18 +10,15 @@ This library combines [kafka-node](https://github.com/SOHU-Co/kafka-node) and [a
 * `brokers`	: A string of kafka broker/host combination delimited by comma.
 * `schema`	: Object representing Schema Settings
 * * `registry` : Registry host
-* * `topics` : Array of Topic settings
+* - `topics` : Array of Topic settings
+* - * `name` : Name of the topic ( required if no `id` is provided )
+* - * `id` : id of the Schema ( required if no `name` is provided )
+* - * `version` : Version of the Schema
+* - * `key_fields` : Array of fields to use to build topic key.
 
-### Schema.topics
+### Sample options
 
-* `name` : Name of the topic
-* `version` : Version of the Schema
-* `id` : id of the Schema
-* `key_fields` : Array of fields to use to build topic key.
-
-#### Sample options
-
-
+By default this package will fetch the schemas against the registry on demand, it will fetch the latest version by the schema  `id`
 ```
 const Settings = {
     "brokers" : "localhost:9092",
@@ -30,7 +27,10 @@ const Settings = {
     }
   };
 ```
+---
+Fetch Schema on the [init](https://github.com/narcisoguillen/kafka-node-avro#init) mechanism by `name`.
 
+It will fetch the latest version of `my.cool.topic` and **only** after being added to the schema pool it will resolve the [init](https://github.com/narcisoguillen/kafka-node-avro#init) promise.
 ```
 const Settings = {
     "brokers" : "localhost:9092",
@@ -40,7 +40,10 @@ const Settings = {
     }
   };
 ```
+---
+Fetch Schema on the [init](https://github.com/narcisoguillen/kafka-node-avro#init) mechanism by `id`.
 
+It will fetch the latest version and **only** after being added to the schema pool it will resolve the [init](https://github.com/narcisoguillen/kafka-node-avro#init) promise.
 ```
 const Settings = {
     "brokers" : "localhost:9092",
@@ -50,7 +53,10 @@ const Settings = {
     }
   };
 ```
+---
+Fetch Schema on the [init](https://github.com/narcisoguillen/kafka-node-avro#init) mechanism by `name` and specific `version`.
 
+It will fetch `my.cool.topic` version `1` and **only** after being added to the schema pool it will resolve the [init](https://github.com/narcisoguillen/kafka-node-avro#init) promise.
 ```
 const Settings = {
     "brokers" : "localhost:9092",
@@ -63,7 +69,12 @@ const Settings = {
     }
   };
 ```
+---
+Fetch Schema on the [init](https://github.com/narcisoguillen/kafka-node-avro#init) mechanism by `name` , a specific `version`, and set the `key_fields`.
 
+It will fetch `my.cool.topic` version `1` and **only** after being added to the schema pool it will resolve the [init](https://github.com/narcisoguillen/kafka-node-avro#init) promise.
+
+It will also set on the [send](https://github.com/narcisoguillen/kafka-node-avro#sendmessage) mechanism the `key` of `my.cool.topic` topic to be **message.foo/message.bar**
 ```
 const Settings = {
     "brokers" : "localhost:9092",
@@ -84,7 +95,13 @@ const Settings = {
  npm install kafka-node-avro
 ```
 
-## Build
+## Test
+
+```
+ npm test
+```
+
+## init
 
 This package will not fullfill the promise if is not able to fetch the schemas from the schema registry.
 
@@ -158,3 +175,4 @@ consumer.on('message', message => {
  // we got a decoded message
 });
 ```
+
