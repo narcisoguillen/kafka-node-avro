@@ -4,9 +4,19 @@
 
 This library combines [kafka-node](https://github.com/SOHU-Co/kafka-node) and [avsc](https://github.com/mtth/avsc) to produce and consume validated serialized messages
 
-# API
+# Install
 
-## Options
+```
+ npm install kafka-node-avro
+```
+
+# Test
+
+```
+ npm test
+```
+
+# Options
 * `brokers`	: A string of kafka broker/host combination delimited by comma.
 * `schema`	: Object representing Schema Settings
 * * `registry` : Registry host
@@ -16,98 +26,22 @@ This library combines [kafka-node](https://github.com/SOHU-Co/kafka-node) and [a
 * - * `version` : Version of the Schema
 * - * `key_fields` : Array of fields to use to build topic key.
 
-### Sample options
+See [sample options](https://github.com/narcisoguillen/kafka-node-avro/wiki/Sample-Options).
 
-By default this package will fetch the schemas against the registry on demand, it will fetch the latest version by the schema  `id`
-```
-const Settings = {
-    "brokers" : "localhost:9092",
-    "schema": {
-      "registry" : "http://schemaregistry.example.com:8081"
-    }
-  };
-```
----
-Fetch Schema on the [init](https://github.com/narcisoguillen/kafka-node-avro#init) mechanism by `name`.
-
-It will fetch the latest version of `my.cool.topic` and **only** after being added to the schema pool it will resolve the [init](https://github.com/narcisoguillen/kafka-node-avro#init) promise.
-```
-const Settings = {
-    "brokers" : "localhost:9092",
-    "schema": {
-      "registry" : "http://schemaregistry.example.com:8081",
-      "topics"   : [{ "name" : "my.cool.topic" }]
-    }
-  };
-```
----
-Fetch Schema on the [init](https://github.com/narcisoguillen/kafka-node-avro#init) mechanism by `id`.
-
-It will fetch the latest version and **only** after being added to the schema pool it will resolve the [init](https://github.com/narcisoguillen/kafka-node-avro#init) promise.
-```
-const Settings = {
-    "brokers" : "localhost:9092",
-    "schema": {
-      "registry" : "http://schemaregistry.example.com:8081",
-      "topics"   : [{ "id" : 1 }]
-    }
-  };
-```
----
-Fetch Schema on the [init](https://github.com/narcisoguillen/kafka-node-avro#init) mechanism by `name` and specific `version`.
-
-It will fetch `my.cool.topic` version `1` and **only** after being added to the schema pool it will resolve the [init](https://github.com/narcisoguillen/kafka-node-avro#init) promise.
-```
-const Settings = {
-    "brokers" : "localhost:9092",
-    "schema": {
-      "registry" : "http://schemaregistry.example.com:8081",
-      "topics"   : [{
-        "name"    : "my.cool.topic",
-        "version" : 1,
-      }]
-    }
-  };
-```
----
-Fetch Schema on the [init](https://github.com/narcisoguillen/kafka-node-avro#init) mechanism by `name` , a specific `version`, and set the `key_fields`.
-
-It will fetch `my.cool.topic` version `1` and **only** after being added to the schema pool it will resolve the [init](https://github.com/narcisoguillen/kafka-node-avro#init) promise.
-
-It will also set on the [send](https://github.com/narcisoguillen/kafka-node-avro#sendmessage) mechanism the `key` of `my.cool.topic` topic to be **message.foo/message.bar**
-```
-const Settings = {
-    "brokers" : "localhost:9092",
-    "schema": {
-      "registry" : "http://schemaregistry.example.com:8081",
-      "topics"   : [{
-        "name"        : "my.cool.topic",
-        "version"     : 1,
-        "key_fields"  : ["foo", "bar"]
-      }]
-    }
-  };
-```
-
-## Install
-
-```
- npm install kafka-node-avro
-```
-
-## Test
-
-```
- npm test
-```
+# API
 
 ## init
 
 This package will not fullfill the promise if is not able to fetch the schemas from the schema registry.
 
-
 ```
 const KafkaAvro = require('kafka-node-avro');
+const Settings  = {
+  "brokers" : "localhost:9092",
+  "schema": {
+    "registry" : "http://schemaregistry.example.com:8081"
+  }
+};
 
 KafkaAvro.init(Settings).then( kafka => {
   // ready to use
@@ -175,4 +109,3 @@ consumer.on('message', message => {
  // we got a decoded message
 });
 ```
-
