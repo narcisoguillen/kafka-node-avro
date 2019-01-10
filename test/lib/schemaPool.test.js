@@ -42,7 +42,7 @@ describe('Schema Pool', function() {
       let topic = { id : 2 };
 
       SchemaPool.setCalled = 0;
-      let set = SchemaPool.set;
+      let set = SchemaPool.set.bind(SchemaPool);
 
       SchemaPool.set = function(){
         SchemaPool.setCalled++;
