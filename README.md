@@ -1,6 +1,9 @@
-# kafka-node-avro
+kafka-node-avro
+==============
 
-> Node.js bindings for `kafka-node` with `Avro` schema serialization.
+[![NPM](https://nodei.co/npm/kafka-node-avro.png)](https://nodei.co/npm/kafka-node-avro/)
+
+> Node.js bindings for `kafka-node` with `avsc` schema serialization.
 
 This library combines [kafka-node](https://github.com/SOHU-Co/kafka-node) and [avsc](https://github.com/mtth/avsc) to produce and consume validated serialized messages
 
