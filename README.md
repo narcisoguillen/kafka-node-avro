@@ -42,7 +42,7 @@ See [sample options](https://github.com/narcisoguillen/kafka-node-avro/wiki/Samp
 
 # API
 
-## init
+## **init**
 
 This package will not fullfill the promise if is **not** able to :
 
@@ -69,7 +69,7 @@ KafkaAvro.init(Settings).then( kafka => {
 
 ```
 
-## schemas
+## **schemas**
 Fetch schemas from the schema registry, this package will fetch the schema from the shcema regitry based on the [initial settings](https://github.com/narcisoguillen/kafka-node-avro#options).
 
 Once schema was fetched from the registry it will keep it on **memory** to be re used.
@@ -86,7 +86,7 @@ Schema format
 }
 ```
 
-### getById
+### schemas.getById
 Get an avro schema by `id`
 ```
 kafka.schemas.getById(1).then( schema => {
@@ -96,7 +96,7 @@ kafka.schemas.getById(1).then( schema => {
 });
 ```
 
-### getByName
+### schemas.getByName
 Get an avro schema by `name`
 ```
 kafka.schemas.getByName('my.cool.topic').then( schema => {
@@ -106,7 +106,7 @@ kafka.schemas.getByName('my.cool.topic').then( schema => {
 });
 ```
 
-## send(\<message\>)
+## **send**(\<message\>)
 This package will auto encode the message using the `avro` schema, if the schema was not provided on the initial settings, it will fetch it against the schema registry and use it from there on.
 
 **Message Format**
@@ -138,7 +138,7 @@ kafka.send({
 
 If an invalid payload was provided for the AVRO Schema, the error will look like : `Invalid Field 'FIELD' type "TYPE" : VALUE`
 
-## addConsumer(\<TopicName\>, [Options])
+## **addConsumer**(\<TopicName\>, [Options])
 
 This package will auto decode the message before emitting on the `message` event, the message will be on a **JSON** format.
 
