@@ -9,12 +9,13 @@ describe('Schema Pool', function() {
 
   beforeEach(function(){
     Settings.read({
-      brokers : "test.broker:9092",
+      kafka :{
+        kafkaHost : "test.broker:9092"
+      },
       schema  : {
         registry : "http://test.registry.com",
       }
     });
-
     Registry.init();
   });
 

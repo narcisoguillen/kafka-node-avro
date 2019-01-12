@@ -20,8 +20,7 @@ This library combines [kafka-node](https://github.com/SOHU-Co/kafka-node) and [a
 ```
 
 # Options
-* `brokers`	:  Quick broker Setup, will use *kafka-node* default [options](https://github.com/SOHU-Co/kafka-node#options)
-* `brokerSettings` : *kafka-node* KafkaClient [options](https://github.com/SOHU-Co/kafka-node#options)
+* `kafka` : *kafka-node* KafkaClient [options](https://github.com/SOHU-Co/kafka-node#options)
 * * `kafkaHost` : A string of kafka broker/host combination delimited by comma for example: `kafka-1.us-east-1.myapp.com:9093,kafka-2.us-east-1.myapp.com:9093,kafka-3.us-east-1.myapp.com:9093` default: `localhost:9092`.
 * * `connectTimeout` : in ms it takes to wait for a successful connection before moving to the next host default: `10000`
 * * `requestTimeout` : in ms for a kafka request to timeout default: `30000`
@@ -48,13 +47,15 @@ See [sample options](https://github.com/narcisoguillen/kafka-node-avro/wiki/Samp
 This package will not fullfill the promise if is **not** able to :
 
 - Fetch the schemas from the schema registry.
-- Connect to the kafka brokers
+- Connect to kafka brokers
 - Build the kafka producer
 
 ```
 const KafkaAvro = require('kafka-node-avro');
 const Settings  = {
-  "brokers" : "localhost:9092",
+  "kafka" : {
+    "kafkaHost" : "localhost:9092"
+  },
   "schema": {
     "registry" : "http://schemaregistry.example.com:8081"
   }
@@ -66,6 +67,43 @@ KafkaAvro.init(Settings).then( kafka => {
   // something wrong happen
 });
 
+```
+
+## schemas
+Fetch schemas from the schema registry, this package will fetch the schema from the shcema regitry based on the [initial settings](https://github.com/narcisoguillen/kafka-node-avro#options).
+
+Once schema was fetched from the registry it will keep it on **memory** to be re used.
+
+Schema format
+```
+{
+    id : Number,
+    name : String,
+    version : Number,
+    key_fields : Arrary,
+    definition : String, // raw responmse from the schema registry.
+    parser : avro.Type.forSchema
+}
+```
+
+### getById
+Get an avro schema by `id`
+```
+kafka.schemas.getById(1).then( schema => {
+  // we got the schema from the registry by the id
+} , error => {
+  // something wrong happen
+});
+```
+
+### getByName
+Get an avro schema by `name`
+```
+kafka.schemas.getByName('my.cool.topic').then( schema => {
+  // we got the schema from the registry by the name
+} , error => {
+  // something wrong happen
+});
 ```
 
 ## send(\<message\>)
