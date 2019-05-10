@@ -26,10 +26,12 @@ This library combines [kafka-node](https://github.com/SOHU-Co/kafka-node) and [a
 * * `requestTimeout` : in ms for a kafka request to timeout default: `30000`
 * * `autoConnect` : automatically connect when KafkaClient is instantiated otherwise you need to manually call `connect` default: `true`
 * * `connectRetryOptions` : object hash that applies to the initial connection. see [retry](https://www.npmjs.com/package/retry) module for these options.
-* * `idleConnection` : allows the broker to disconnect an idle connection from a client (otherwise the clients continues to reconnect after being disconnected). The value is elapsed time in ms without any data written to the TCP socket. default: 5 minutes
+* * `idleConnection` : allows the broker to disconnect an idle connection from a client (otherwise the clients continues to O after being disconnected). The value is elapsed time in ms without any data written to the TCP socket. default: 5 minutes
+* * `reconnectOnIdle` : when the connection is closed due to client idling, client will attempt to auto-reconnect. default: true
 * * `maxAsyncRequests` : maximum async operations at a time toward the kafka cluster. default: 10
 * * `sslOptions`: **Object**, options to be passed to the tls broker sockets, ex. `{ rejectUnauthorized: false }` (Kafka 0.9+)
 * * `sasl`: **Object**, SASL authentication configuration (only SASL/PLAIN is currently supported), ex. `{ mechanism: 'plain', username: 'foo', password: 'bar' }` (Kafka 0.10+)
+
 * `schema`	: Object representing Schema Settings
 * * `registry` : Registry host
 * - `topics` : Array of Topic settings
@@ -145,17 +147,17 @@ This package will auto decode the message before emitting on the `message` event
 **Options**
 
 * `simple` : If **NO** avro schema parsing is needed to consume the message
-* `host` : zookeeper host omit if connecting directly to broker (see kafkaHost below)
-* `kafkaHost` : connect directly to kafka broker (instantiates a KafkaClient)
-* `zk` : put client zk settings if you need them (see Client)
-* `batch` : put client batch settings if you need them (see Client)
-* `ssl` : optional (defaults to false) or tls options hash
-* `groupId` : Group Id
-* `sessionTimeout` : Session Tiemout
-* `protocol` : An array of partition assignment protocols ordered by preference. ['roundrobin']
-* `fromOffset` : latest
-* `commitOffsetsOnFirstJoin` : on the very first time this consumer group subscribes to a topic, record the offset returned in fromOffset (latest/earliest)
-* `outOfRangeOffset` : how to recover from OutOfRangeOffset error (where save offset is past server retention) accepts same value as fromOffset
+* `kafkaHost` : connect directly to kafka broker (instantiates a KafkaClient) : 'broker:9092'
+* `batch` : put client batch settings if you need them : undefined
+* `ssl` : optional (defaults to false) or tls options hash : true
+* `groupId` : 'ExampleTestGroup'
+* `sessionTimeout` : 15000,
+* `protocol` : An array of partition assignment protocols ordered by preference, 'roundrobin' or 'range' string for built ins : ['roundrobin']
+* `encoding` : 'utf8' or 'buffer', Please do nto replace this value , this library by default uses `buffer` to decode binary schema
+* `fromOffset` : Offsets to use for new groups other options could be 'earliest' or 'none' (none will emit an error if no offsets were saved) , equivalent to Java client's auto.offset.reset: 'latest'
+* `commitOffsetsOnFirstJoin` : on the very first time this consumer group subscribes to a topic, record the offset returned in fromOffset (latest/earliest) : true
+* `outOfRangeOffset` : how to recover from OutOfRangeOffset error (where save offset is past server retention) accepts same value as fromOffset : 'earliest'
+* `onRebalance` : Callback to allow consumers with autoCommit false a chance to commit before a rebalance finishes , isAlreadyMember will be false on the first connection, and true on rebalances triggered after that : (isAlreadyMember, callback) => { callback(); } // or null
 
 ```
 let consumer = kafka.addConsumer("my.cool.topic");
