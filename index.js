@@ -1,19 +1,14 @@
-const Settings   = require('./lib/settings');
-const Registry   = require('./lib/registry');
-const Client     = require('./lib/client');
-const Producer   = require('./lib/producer');
-const SchemaPool = require('./lib/schemaPool');
-const Mechanisms = require('./mechanisms');
-
 module.exports.init = async function(settings){
-  Settings.read(settings);
-  Registry.init();
+  const core = require('./lib');
 
-  let alive    = await Registry.alive();
-  let client   = await Client.connect();
-  let producer = await Producer.connect(client);
+  core.Settings.read(settings);
+  core.Registry.init();
 
-  await SchemaPool.addList(Settings.schema.topics);
+  let alive    = await core.Registry.alive();
+  let client   = await core.Client.connect();
+  let producer = await core.Producer.connect(client);
 
-  return Mechanisms;
+  await core.SchemaPool.addList(core.Settings.schema.topics);
+
+  return core.Mechanisms;
 };

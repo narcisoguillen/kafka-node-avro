@@ -7,6 +7,14 @@ kafka-node-avro
 
 This library combines [kafka-node](https://github.com/SOHU-Co/kafka-node) and [avsc](https://github.com/mtth/avsc) to produce and consume validated serialized messages
 
+# Requirements
+
+`kafka-node` is a peer dependency, make sure to install it. Tested on kafka-node 4.1.3
+
+```
+ npm install kafka-node
+```
+
 # Install
 
 ```
