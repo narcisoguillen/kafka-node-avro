@@ -1,6 +1,6 @@
 {
   "name": "kafka-node-avro",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "description": "kafka avro serialization",
   "main": "index.js",
   "author": "narciso guillen",
@@ -25,7 +25,6 @@
   "homepage": "https://github.com/narcisoguillen/kafka-node-avro#readme",
   "dependencies": {
     "avsc": "^5.4.7",
-    "npm": "^6.4.1",
     "request": "^2.88.0"
   },
   "devDependencies": {
