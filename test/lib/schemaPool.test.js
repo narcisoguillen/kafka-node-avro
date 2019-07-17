@@ -29,7 +29,7 @@ describe('Schema Pool', function() {
       let topic = { id : 1 };
 
       SchemaPool.add(topic).then( schema => {
-        expect(SchemaPool[1]).to.eql(schema);
+        expect(SchemaPool.items[1]).to.eql(schema);
         return done();
       }, done);
     });
@@ -52,7 +52,7 @@ describe('Schema Pool', function() {
 
       let ready = after(10, function(schema){
         expect(SchemaPool.setCalled).to.eql(1);
-        expect(SchemaPool[2]).to.be.an('object');
+        expect(SchemaPool.items[2]).to.be.an('object');
         expect(schema.id).to.eql(2);
         return done();
       });
@@ -72,7 +72,7 @@ describe('Schema Pool', function() {
       expect(SchemaPool.set).to.be.a('function');
       let schema = new Schema({ id : 3 });
       SchemaPool.set(schema);
-      expect(SchemaPool[3]).to.eql(schema);
+      expect(SchemaPool.items[3]).to.eql(schema);
     });
   });
 

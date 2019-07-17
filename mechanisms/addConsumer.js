@@ -1,6 +1,6 @@
-const Consumer = require('../lib/consumer');
+const consumerPool = require('../lib/consumerPool');
 
 module.exports = function(topics, options){
   (options) || (options = {});
-  return new Consumer(topics, options);
+  return consumerPool.add(topics, options);
 };
