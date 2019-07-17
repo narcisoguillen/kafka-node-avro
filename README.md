@@ -174,3 +174,13 @@ consumer.on('message', message => {
  // we got a decoded message
 });
 ```
+
+## **close**([callback])
+
+Closes all `consumers`, `producer`, `client`, and cleans `schemas`. The callback argument is optional and will be called when all is closed.
+
+```
+kafka.close( closed => {
+ //..
+});
+```

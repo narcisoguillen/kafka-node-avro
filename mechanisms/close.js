@@ -5,7 +5,9 @@ const Client       = require('../lib/client');
 const {after}      = require('../lib/utils');
 
 module.exports = function(done){
-  let next = after(4, done);
+  let next = after(4, done || function(){
+    console.log('kafka-node-avro#closed');
+  });
 
   consumerPool.flush(next);
   Producer.close(next);
