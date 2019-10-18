@@ -40,6 +40,30 @@ describe('Registry', function() {
           return done();
         }, done);
       });
+
+      describe('with endpoint setting supplied', function() {
+        it('should touch registry to see if its alive', function(done) {
+          nock('http://test.registry.com').get('/foo').reply(200, ['test.topic']);
+
+          const settings = {endpoint: 'foo'};
+          Registry.alive(settings).then( alive => {
+            expect(alive).to.eql('["test.topic"]');
+            return done();
+          }, done);
+        });
+      });
+
+      describe('with empty endpoint setting supplied', function() {
+        it('should touch registry to see if its alive', function(done) {
+          nock('http://test.registry.com').get('/').reply(200, ['test.topic']);
+
+          const settings = {endpoint: ''};
+          Registry.alive(settings).then( alive => {
+            expect(alive).to.eql('["test.topic"]');
+            return done();
+          }, done);
+        });
+      });
     });
 
     describe('fetchVersions', function() {

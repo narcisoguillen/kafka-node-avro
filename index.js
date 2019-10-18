@@ -4,7 +4,7 @@ module.exports.init = async function(settings){
   core.Settings.read(settings);
   core.Registry.init();
 
-  let alive    = await core.Registry.alive();
+  let alive    = await core.Registry.alive(settings.alive);
   let client   = await core.Client.connect();
   let producer = await core.Producer.connect(client);
 
