@@ -153,9 +153,9 @@ If an invalid payload was provided for the AVRO Schema, the error will look like
 
 ## **addProducer**([options], [customPartitioner])
 
-kafka-node-avro has a global producer with default kafka-node settings for the **HighLevelProducer**, this mechanism will allow to create HighLevelProducers on demand with the ability to set options and customPartitioner. [here]([https://github.com/SOHU-Co/kafka-node#highlevelproducer](https://github.com/SOHU-Co/kafka-node#highlevelproducer)) for more info.
+kafka-node-avro has a global producer with default kafka-node settings for the **HighLevelProducer**, this mechanism will allow to create HighLevelProducers on demand with the ability to set options and customPartitioner. [here](https://github.com/SOHU-Co/kafka-node#highlevelproducer) for more info.
 
-When creating a new producer, this prodicer will use the same **send** as the global producer, this send will auto encode the message using the `avro` schema, if the schema was not provided on the initial settings, it will fetch it against the schema registry and use it from there on.
+When creating a new producer, **send** mechanism is the same as the global producer, this send will auto encode the message using the `avro` schema, if the schema was not provided on the initial settings, it will fetch it against the schema registry and use it from there on.
 
 **Message Format**
 
@@ -182,8 +182,6 @@ producer.send({
   // Something wrong happen
 });
 ```
-
-
 
 ## **addConsumer**(\<TopicName\>, [Options])
 
