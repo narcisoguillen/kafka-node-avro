@@ -151,6 +151,40 @@ kafka.send({
 
 If an invalid payload was provided for the AVRO Schema, the error will look like : `Invalid Field 'FIELD' type "TYPE" : VALUE`
 
+## **addProducer**([options], [customPartitioner])
+
+kafka-node-avro has a global producer with default kafka-node settings for the **HighLevelProducer**, this mechanism will allow to create HighLevelProducers on demand with the ability to set options and customPartitioner. [here]([https://github.com/SOHU-Co/kafka-node#highlevelproducer](https://github.com/SOHU-Co/kafka-node#highlevelproducer)) for more info.
+
+When creating a new producer, this prodicer will use the same **send** as the global producer, this send will auto encode the message using the `avro` schema, if the schema was not provided on the initial settings, it will fetch it against the schema registry and use it from there on.
+
+**Message Format**
+
+* `simple` : If **NO** avro schema parsing is needed to send the message
+* `topic` : Topic Name
+* `messages` : messages to send type **Object** or **Array** of **Objects**
+* `key` : string or buffer, only needed when using keyed partitioner
+* `partition` :  default 0
+* `attributes` : default: 0
+* `timestamp` : Date.now() // <-- defaults to Date.now() (only available with kafka v0.10 and KafkaClient only)
+
+```
+const producer = kafka.addProducer();
+
+producer.send({
+  topic    : 'my.cool.topic',
+  messages : {
+    foo : 'hello',
+    bar : 'world'
+  }
+}).then( success => {
+  // Message was sent encoded with Avro Schema
+}, error => {
+  // Something wrong happen
+});
+```
+
+
+
 ## **addConsumer**(\<TopicName\>, [Options])
 
 This package will auto decode the message before emitting on the `message` event, the message will be on a **JSON** format.
