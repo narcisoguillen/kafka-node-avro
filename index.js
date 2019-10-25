@@ -1,14 +1,18 @@
-module.exports.init = async function(settings){
-  const core = require('./lib');
+const kafkaNodeAvro = {};
 
-  core.Settings.read(settings);
-  core.Registry.init();
+kafkaNodeAvro.init = async function(settings){
+  kafkaNodeAvro.core = require('./lib');
 
-  let alive    = await core.Registry.alive();
-  let client   = await core.Client.connect();
-  let producer = await core.Producer.connect(client);
+  kafkaNodeAvro.core.Settings.read(settings);
+  kafkaNodeAvro.core.Registry.init();
 
-  await core.SchemaPool.addList(core.Settings.schema.topics);
+  let alive              = await kafkaNodeAvro.core.Registry.alive();
+  kafkaNodeAvro.client   = await kafkaNodeAvro.core.Client.connect();
+  kafkaNodeAvro.producer = new kafkaNodeAvro.core.Producer();
 
-  return core.Mechanisms;
+  await kafkaNodeAvro.core.SchemaPool.addList(kafkaNodeAvro.core.Settings.schema.topics);
+
+  return kafkaNodeAvro.core.Mechanisms;
 };
+
+module.exports = kafkaNodeAvro;
