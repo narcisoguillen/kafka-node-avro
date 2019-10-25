@@ -6,7 +6,7 @@ kafkaNodeAvro.init = async function(settings){
   kafkaNodeAvro.core.Settings.read(settings);
   kafkaNodeAvro.core.Registry.init();
 
-  let alive              = await kafkaNodeAvro.core.Registry.alive();
+  let alive              = await kafkaNodeAvro.core.Registry.alive(settings.alive);
   kafkaNodeAvro.client   = await kafkaNodeAvro.core.Client.connect();
   kafkaNodeAvro.producer = new kafkaNodeAvro.core.Producer();
 
