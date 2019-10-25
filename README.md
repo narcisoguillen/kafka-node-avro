@@ -49,7 +49,7 @@ This library combines [kafka-node](https://github.com/SOHU-Co/kafka-node) and [a
 * - * `key_fields` : Array of fields to use to build topic key.
 
 * `alive`	: Object representing Registry.alive settings
-* * `endpoint` : Health check endpoint
+* * `endpoint` : Health check endpoint. default: 'subjects'
 
 See [sample options](https://github.com/narcisoguillen/kafka-node-avro/wiki/Sample-Options).
 
