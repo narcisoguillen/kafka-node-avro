@@ -45,8 +45,8 @@ describe('Registry', function() {
         it('should touch registry to see if its alive', function(done) {
           nock('http://test.registry.com').get('/foo').reply(200, ['test.topic']);
 
-          const settings = {endpoint: 'foo'};
-          Registry.alive(settings).then( alive => {
+          Settings.alive = { endpoint : 'foo' }
+          Registry.alive().then( alive => {
             expect(alive).to.eql('["test.topic"]');
             return done();
           }, done);
@@ -57,8 +57,8 @@ describe('Registry', function() {
         it('should touch registry to see if its alive', function(done) {
           nock('http://test.registry.com').get('/').reply(200, ['test.topic']);
 
-          const settings = {endpoint: ''};
-          Registry.alive(settings).then( alive => {
+          Settings.alive = { endpoint : '' }
+          Registry.alive().then( alive => {
             expect(alive).to.eql('["test.topic"]');
             return done();
           }, done);
