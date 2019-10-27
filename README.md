@@ -167,6 +167,18 @@ When creating a new producer, **send** mechanism is the same as the global produ
 * `attributes` : default: 0
 * `timestamp` : Date.now() // <-- defaults to Date.now() (only available with kafka v0.10 and KafkaClient only)
 
+**Close**
+
+Ability to close the producer
+
+WARNING : closing the producer will close kafka client, this is part of `kafka-node` baseProducer definition.
+
+```
+producer.close( closed => {
+  // Connection is closed
+});
+```
+
 ```
 const producer = kafka.addProducer();
 
