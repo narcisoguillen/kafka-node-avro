@@ -1,6 +1,6 @@
 {
   "name": "kafka-node-avro",
-  "version": "4.1.1",
+  "version": "4.1.2",
   "description": "kafka avro serialization",
   "main": "index.js",
   "author": "narciso guillen",
