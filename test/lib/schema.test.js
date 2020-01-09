@@ -97,6 +97,49 @@ describe('Shema', function() {
         return done();
       } , done);
     });
+
+    it('should parse optional partition', function(done) {
+      let partition = Math.round(Math.random() * 10);
+
+      let payload = { partition,
+        messages : {
+          foo : 'hello',
+          bar : 'world'
+        }
+      };
+
+      expect(this.schema.parse).to.be.a('function');
+      this.schema.parse(payload).then( parsed => {
+        expect(parsed).to.be.an('array');
+        expect(parsed[0].topic).to.eql('test.topic');
+        expect(parsed[0].key).to.eql('hello/world');
+        expect(parsed[0].partition).to.eql(partition);
+        expect(Buffer.isBuffer(parsed[0].messages)).to.be(true);
+        return done();
+      } , done);
+    });
+
+    it('should parse optional attributes', function(done) {
+      let attributes = Math.round(Math.random() * 10);
+
+      let payload = { attributes,
+        messages : {
+          foo : 'hello',
+          bar : 'world'
+        }
+      };
+
+      expect(this.schema.parse).to.be.a('function');
+      this.schema.parse(payload).then( parsed => {
+        expect(parsed).to.be.an('array');
+        expect(parsed[0].topic).to.eql('test.topic');
+        expect(parsed[0].key).to.eql('hello/world');
+        expect(parsed[0].attributes).to.eql(attributes);
+        expect(Buffer.isBuffer(parsed[0].messages)).to.be(true);
+        return done();
+      } , done);
+    });
+
   });
 
   describe('genKey', function() {
