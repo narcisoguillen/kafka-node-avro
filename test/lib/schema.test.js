@@ -78,6 +78,25 @@ describe('Shema', function() {
       } , done);
     });
 
+    it('should parse optional timestamp', function(done) {
+      let payload = {
+        timestamp: 1578400460000,
+        messages : {
+          foo : 'hello',
+          bar : 'world'
+        }
+      };
+
+      expect(this.schema.parse).to.be.a('function');
+      this.schema.parse(payload).then( parsed => {
+        expect(parsed).to.be.an('array');
+        expect(parsed[0].topic).to.eql('test.topic');
+        expect(parsed[0].key).to.eql('hello/world');
+        expect(parsed[0].timestamp).to.eql(1578400460000);
+        expect(Buffer.isBuffer(parsed[0].messages)).to.be(true);
+        return done();
+      } , done);
+    });
   });
 
   describe('genKey', function() {
