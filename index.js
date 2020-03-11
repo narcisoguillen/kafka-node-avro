@@ -1,4 +1,6 @@
-const kafkaNodeAvro = {};
+const kafkaNodeAvro = {
+  config : require('./lib/config')
+};
 
 kafkaNodeAvro.init = async function(settings){
   kafkaNodeAvro.core = require('./lib');

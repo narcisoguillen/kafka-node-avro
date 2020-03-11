@@ -71,7 +71,7 @@ describe('Registry', function() {
         nock('http://test.registry.com').get('/subjects/test.topic-value/versions').reply(200, JSON.stringify([1,2,3]));
 
         expect(Registry.fetchVersions).to.be.a('function');
-        Registry.fetchVersions('test.topic').then( versions => {
+        Registry.fetchVersions(undefined, 'test.topic', undefined).then( versions => {
           expect(versions).to.be.an('array');
           return done();
         }, done);
@@ -85,7 +85,7 @@ describe('Registry', function() {
         }));
 
         expect(Registry.fetchById).to.be.a('function');
-        Registry.fetchById(1).then( schema => {
+        Registry.fetchById(1, undefined, undefined).then( schema => {
           expect(schema).to.be.an('object');
           return done();
         }, done);
