@@ -12,6 +12,11 @@ describe('Registry', function() {
       },
       schema  : {
         registry : "http://test.registry.com",
+        endpoints : {
+          byId        : 'schemas/ids/{{id}}',
+          allVersions : 'subjects/{{name}}-value/versions',
+          byVersion   : 'subjects/{{name}}-value/versions/{{version}}'
+        }
       }
     });
   });
@@ -93,4 +98,82 @@ describe('Registry', function() {
     });
 
   });
+
+  describe('Custom endpoints from settings', function(){
+
+    it('should fetch schema by id [CUSTOM]', function(done) {
+      Settings.read({
+        kafka :{
+          kafkaHost : "test.broker:9092"
+        },
+        schema  : {
+          registry : "http://test.registry.com",
+          endpoints : {
+            byId : 'custom/ids/{{id}}'
+          }
+        }
+      });
+      Registry.init();
+
+      nock('http://test.registry.com').get('/custom/ids/1').reply(200, JSON.stringify({
+        schema : '{"type":"record","name":"TestTopic","namespace":"com.test.avro","fields":[{"name":"foo","type":"string"},{"name":"bar","type":"string"}]}'
+      }));
+
+      expect(Registry.fetchById).to.be.a('function');
+      Registry.fetchById(1, undefined, undefined).then( schema => {
+        expect(schema).to.be.an('object');
+        return done();
+      }, done);
+    });
+
+    it('should fetch all versions [CUSTOM]', function(done) {
+      Settings.read({
+        kafka :{
+          kafkaHost : "test.broker:9092"
+        },
+        schema  : {
+          registry : "http://test.registry.com",
+          endpoints : {
+            allVersions : 'subjects/{{name}}-custom/versions'
+          }
+        }
+      });
+      Registry.init();
+
+      nock('http://test.registry.com').get('/subjects/test.topic-custom/versions').reply(200, JSON.stringify([1,2,3]));
+
+      expect(Registry.fetchVersions).to.be.a('function');
+      Registry.fetchVersions(undefined, 'test.topic', undefined).then( versions => {
+        expect(versions).to.be.an('array');
+        return done();
+      }, done);
+    });
+
+    it('should fetch by version [CUSTOM]', function(done) {
+      Settings.read({
+        kafka :{
+          kafkaHost : "test.broker:9092"
+        },
+        schema  : {
+          registry : "http://test.registry.com",
+          endpoints : {
+            byVersion   : 'subjects/{{name}}-custom/versions/{{version}}'
+          }
+        }
+      });
+      Registry.init();
+
+      nock('http://test.registry.com').get('/subjects/test.topic-custom/versions/1').reply(200, JSON.stringify({
+        schema : '{"type":"record","name":"TestTopic","namespace":"com.test.avro","fields":[{"name":"foo","type":"string"},{"name":"bar","type":"string"}]}'
+      }));
+
+      expect(Registry.fetchByVersion).to.be.a('function');
+      Registry.fetchByVersion(undefined, 'test.topic', 1).then( versions => {
+        expect(versions).to.be.an('object');
+        return done();
+      }, done);
+    });
+
+  });
+
 });
