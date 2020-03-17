@@ -109,7 +109,7 @@ const myCustomPlugin2 = function(core){
   };
 };
 
-const myCustomPlugin2 = function(core){
+const myCustomPlugin3 = function(core){
   // Create new mechanism
   core.Mechanisms.myFunction = function(){
     // logic
@@ -152,18 +152,27 @@ Schema format
 ### schemas.getById
 Get an avro schema by `id`
 ```javascript
-kafka.schemas.getById(1).then( schema => {
-  // we got the schema from the registry by the id
+KafkaAvro.init(Settings).then( kafka => {
+  kafka.schemas.getById(1).then( schema => {
+    // we got the schema from the registry by the id
+  } , error => {
+    // something wrong happen
+  });
 } , error => {
   // something wrong happen
 });
+
 ```
 
 ### schemas.getByName
 Get an avro schema by `name`
 ```javascript
-kafka.schemas.getByName('my.cool.topic').then( schema => {
-  // we got the schema from the registry by the name
+KafkaAvro.init(Settings).then( kafka => {
+  kafka.schemas.getByName('my.cool.topic').then( schema => {
+    // we got the schema from the registry by the name
+  } , error => {
+    // something wrong happen
+  });
 } , error => {
   // something wrong happen
 });
@@ -186,16 +195,20 @@ This package will auto encode the message using the `avro` schema, if the schema
 If `key_fields` where provided when building the package, they will be used to send the messages on that `key`, on this example the key will be `hello/world`
 
 ```javascript
-kafka.send({
-  topic    : 'my.cool.topic',
-  messages : {
-    foo : 'hello',
-    bar : 'world'
-  }
-}).then( success => {
-  // Message was sent encoded with Avro Schema
-}, error => {
-  // Something wrong happen
+KafkaAvro.init(Settings).then( kafka => {
+  kafka.send({
+    topic    : 'my.cool.topic',
+    messages : {
+      foo : 'hello',
+      bar : 'world'
+    }
+  }).then( success => {
+    // Message was sent encoded with Avro Schema
+  }, error => {
+    // Something wrong happen
+  });
+} , error => {
+  // something wrong happen
 });
 ```
 
@@ -218,18 +231,22 @@ When creating a new producer, **send** mechanism is the same as the global produ
 * `timestamp` : Date.now() // <-- defaults to Date.now() (only available with kafka v0.10 and KafkaClient only)
 
 ```javascript
-const producer = kafka.addProducer();
+KafkaAvro.init(Settings).then( kafka => {
+  const producer = kafka.addProducer();
 
-producer.send({
-  topic    : 'my.cool.topic',
-  messages : {
-    foo : 'hello',
-    bar : 'world'
-  }
-}).then( success => {
-  // Message was sent encoded with Avro Schema
-}, error => {
-  // Something wrong happen
+  producer.send({
+    topic    : 'my.cool.topic',
+    messages : {
+      foo : 'hello',
+      bar : 'world'
+    }
+  }).then( success => {
+    // Message was sent encoded with Avro Schema
+  }, error => {
+    // Something wrong happen
+  });
+} , error => {
+  // something wrong happen
 });
 ```
 
@@ -265,10 +282,13 @@ This package will auto decode the message before emitting on the `message` event
 * `onRebalance` : Callback to allow consumers with autoCommit false a chance to commit before a rebalance finishes , isAlreadyMember will be false on the first connection, and true on rebalances triggered after that : (isAlreadyMember, callback) => { callback(); } // or null
 
 ```javascript
-let consumer = kafka.addConsumer("my.cool.topic");
+KafkaAvro.init(Settings).then( kafka => {
+  let consumer = kafka.addConsumer("my.cool.topic");
 
-consumer.on('message', message => {
- // we got a decoded message
+  consumer.on('message', message => {
+   // we got a decoded message
+  });
+} , error => {
+  // something wrong happen
 });
 ```
-
