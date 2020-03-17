@@ -1,8 +1,13 @@
-const kafkaNodeAvro = {};
+const kafkaNodeAvro = { };
+
+kafkaNodeAvro.use = function(plugin){
+  (kafkaNodeAvro.core) || (kafkaNodeAvro.core = require('./lib'));
+  plugin(kafkaNodeAvro.core);
+  return kafkaNodeAvro;
+};
 
 kafkaNodeAvro.init = async function(settings){
-  kafkaNodeAvro.core = require('./lib');
-
+  (kafkaNodeAvro.core) || (kafkaNodeAvro.core = require('./lib'));
   kafkaNodeAvro.core.Settings.read(settings);
   kafkaNodeAvro.core.Registry.init();
 

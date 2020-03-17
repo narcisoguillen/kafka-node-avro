@@ -14,6 +14,11 @@ describe('Shema', function() {
       },
       schema  : {
         registry : "http://test.registry.com",
+        endpoints : {
+          byId        : 'schemas/ids/{{id}}',
+          allVersions : 'subjects/{{name}}-value/versions',
+          byVersion   : 'subjects/{{name}}-value/versions/{{version}}'
+        }
       }
     });
     Registry.init();
