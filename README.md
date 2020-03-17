@@ -88,9 +88,9 @@ KafkaAvro.init(Settings).then( kafka => {
 
 ## **use**
 
-Ability to build custom plugins, this method will allow to modify existing **core** implementations by direct overwrites *or* to build new mechanisms.
+Ability to build custom plugins, this method will allow to modify existing [**core**](https://github.com/narcisoguillen/kafka-node-avro/wiki/core) implementations by direct overwrites *or* to build new mechanisms.
 
-A Plugin must be a function, this function will get as argument the **core** of `kafka-node-avro`
+A Plugin must be a function, this function will get as argument the [**core**](https://github.com/narcisoguillen/kafka-node-avro/wiki/core) of `kafka-node-avro`
 
 ```javascript
 const myCustomPlugin1 = function(core){
@@ -264,3 +264,4 @@ consumer.on('message', message => {
  // we got a decoded message
 });
 ```
+
