@@ -47,6 +47,10 @@ This library combines [kafka-node](https://github.com/SOHU-Co/kafka-node) and [a
 * - * `id` : id of the Schema ( required if no `name` is provided )
 * - * `version` : Version of the Schema
 * - * `key_fields` : Array of fields to use to build topic key.
+* * `endpoints` : Object representing the Registry endpoints
+* - * `byId` String to build **by id endpoint**. Default : *'schemas/ids/{{id}}'*
+* - * `allVersions` String to build **by all versions endpoint**. Default : *'subjects/{{name}}-value/versions'*
+* - * `byVersion` String to build **by version endpoint**. Default : *'subjects/{{name}}-value/versions/{{version}}'*
 
 * `alive`	: Object representing Registry.alive settings
 * * `endpoint` : Health check endpoint. default: 'subjects'
@@ -63,7 +67,7 @@ This package will not fullfill the promise if is **not** able to :
 - Connect to kafka brokers
 - Build the kafka producer
 
-```
+```javascript
 const KafkaAvro = require('kafka-node-avro');
 const Settings  = {
   "kafka" : {
@@ -82,13 +86,52 @@ KafkaAvro.init(Settings).then( kafka => {
 
 ```
 
+## **use**
+
+Ability to build custom plugins, this method will allow to modify existing **core** implementations by direct overwrites *or* to build new mechanisms.
+
+A Plugin must be a function, this function will get as argument the **core** of `kafka-node-avro`
+
+```javascript
+const myCustomPlugin1 = function(core){
+  // Overwrite : default registry uri builder for allVersions
+  core.Registry.endpoints.allVersions = function(id, name, version){
+    console.log('Look ma !, fetching all versions');
+    return `subjects/${name}-value/versions`;
+  };
+};
+
+const myCustomPlugin2 = function(core){
+  // Overwrite : default consumer parser
+  core.Consumer.prototype.parse = function(message){
+    console.log('Workign on this -> ', message);
+    return this.emit('message', message); // emit to consumers
+  };
+};
+
+```
+
+Plugging in
+
+```javascript
+KafkaAvro
+  .use(myCustomPlugin1)
+  .use(myCustomPlugin2)
+  .init(Settings).then( kafka => {
+    // ..
+} , error => {
+  // ..
+});
+
+```
+
 ## **schemas**
 Fetch schemas from the schema registry, this package will fetch the schema from the shcema regitry based on the [initial settings](https://github.com/narcisoguillen/kafka-node-avro#options).
 
 Once schema was fetched from the registry it will keep it on **memory** to be re used.
 
 Schema format
-```
+```javascript
 {
     id : Number,
     name : String,
@@ -101,7 +144,7 @@ Schema format
 
 ### schemas.getById
 Get an avro schema by `id`
-```
+```javascript
 kafka.schemas.getById(1).then( schema => {
   // we got the schema from the registry by the id
 } , error => {
@@ -111,7 +154,7 @@ kafka.schemas.getById(1).then( schema => {
 
 ### schemas.getByName
 Get an avro schema by `name`
-```
+```javascript
 kafka.schemas.getByName('my.cool.topic').then( schema => {
   // we got the schema from the registry by the name
 } , error => {
@@ -135,7 +178,7 @@ This package will auto encode the message using the `avro` schema, if the schema
 
 If `key_fields` where provided when building the package, they will be used to send the messages on that `key`, on this example the key will be `hello/world`
 
-```
+```javascript
 kafka.send({
   topic    : 'my.cool.topic',
   messages : {
@@ -167,7 +210,7 @@ When creating a new producer, **send** mechanism is the same as the global produ
 * `attributes` : default: 0
 * `timestamp` : Date.now() // <-- defaults to Date.now() (only available with kafka v0.10 and KafkaClient only)
 
-```
+```javascript
 const producer = kafka.addProducer();
 
 producer.send({
@@ -189,7 +232,7 @@ Ability to close the producer
 
 WARNING : closing the producer will close kafka client, this is part of `kafka-node` baseProducer definition.
 
-```
+```javascript
 producer.close( closed => {
   // Connection is closed
 });
@@ -214,7 +257,7 @@ This package will auto decode the message before emitting on the `message` event
 * `outOfRangeOffset` : how to recover from OutOfRangeOffset error (where save offset is past server retention) accepts same value as fromOffset : 'earliest'
 * `onRebalance` : Callback to allow consumers with autoCommit false a chance to commit before a rebalance finishes , isAlreadyMember will be false on the first connection, and true on rebalances triggered after that : (isAlreadyMember, callback) => { callback(); } // or null
 
-```
+```javascript
 let consumer = kafka.addConsumer("my.cool.topic");
 
 consumer.on('message', message => {
