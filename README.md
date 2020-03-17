@@ -109,16 +109,23 @@ const myCustomPlugin2 = function(core){
   };
 };
 
+const myCustomPlugin2 = function(core){
+  // Create new mechanism
+  core.Mechanisms.myFunction = function(){
+    // logic
+  };
+};
 ```
 
 Plugging in
 
 ```javascript
 KafkaAvro
-  .use(myCustomPlugin1)
-  .use(myCustomPlugin2)
+  .use(myCustomPlugin1) // change how to build uri to fetch a schema by all versions
+  .use(myCustomPlugin2) // change how to parse an incommig message
+  .use(myCustomPlugin3) // add a new `myFunction`
   .init(Settings).then( kafka => {
-    // ..
+    kafka.myFunction(); // new method by plugin
 } , error => {
   // ..
 });
