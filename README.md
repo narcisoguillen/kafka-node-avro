@@ -9,7 +9,7 @@ This library combines [kafka-node](https://github.com/SOHU-Co/kafka-node) and [a
 
 # Requirements
 
-`kafka-node` is a peer dependency, make sure to install it. Tested on kafka-node 4.1.3
+`kafka-node` is a peer dependency, make sure to install it. Tested on kafka-node 5.0.0
 
 ```
  npm install kafka-node
@@ -42,6 +42,16 @@ This library combines [kafka-node](https://github.com/SOHU-Co/kafka-node) and [a
 
 * `schema`	: Object representing Schema Settings
 * * `registry` : Registry host
+* * `options` : Object registry options [TLS/SSL options](https://github.com/request/request#tlsssl-protocol)
+* - * `headers` : Default is { 'Content-Type': 'application/vnd.schemaregistry.v1+json' }
+* - * `cert` : fs.readFileSync(certFile)
+* - * `key` : fs.readFileSync(keyFile)
+* - * `passphrase` : 'password'
+* - * `ca` : fs.readFileSync(caFile)
+* - * `auth` : Authentication Object [HTTP Authentication](https://github.com/request/request#http-authentication)
+* - * -  `user` : 'username'
+* - * -  `pass` : 'password'
+* - * -  `sendImmediately` : false
 * - `topics` : Array of Topic settings
 * - * `name` : Name of the topic ( required if no `id` is provided )
 * - * `id` : id of the Schema ( required if no `name` is provided )

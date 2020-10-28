@@ -11,7 +11,8 @@ describe('Registry', function() {
         kafkaHost : "test.broker:9092"
       },
       schema  : {
-        registry : "http://test.registry.com",
+        registry  : "http://test.registry.com",
+        options   : {},
         endpoints : {
           byId        : 'schemas/ids/{{id}}',
           allVersions : 'subjects/{{name}}-value/versions',
@@ -176,4 +177,28 @@ describe('Registry', function() {
 
   });
 
+  describe('Custom registry options', function(){
+    it('should be able to set auth username and password', function() {
+      Settings.read({
+        kafka :{
+          kafkaHost : "test.broker:9092"
+        },
+        schema  : {
+          registry : "http://test.registry.com",
+          options : {
+            auth : {
+              user : 'username',
+              pass : 'password'
+            }
+          }
+        }
+      });
+      Registry.init();
+
+      expect(Registry.options.auth.user).to.eql('username');
+      expect(Registry.options.auth.pass).to.eql('password');
+    });
+  });
+
 });
+
